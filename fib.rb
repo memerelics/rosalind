@@ -1,5 +1,5 @@
 # 死なないバージョンのウサギFibonacci
-# This problem introduces us to the computational technique of dynamic programming, which successively builds up solutions by using the answers to smaller cases.
+# http://rosalind.info/problems/fib/
 
 def rabbits(n, k)
   if n <= 2

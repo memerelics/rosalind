@@ -1,3 +1,6 @@
+# 相補塩基対
+# http://rosalind.info/problems/revc/
+
 def comp(s)
   case s
   when 'A' then 'T'

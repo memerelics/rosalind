@@ -1,3 +1,4 @@
+# 塩基カウント
 # http://rosalind.info/problems/dna/
 
 def a(ary, c)

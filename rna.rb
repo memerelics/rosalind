@@ -1,3 +1,6 @@
+# DNA -> RNA
+# http://rosalind.info/problems/rna/
+
 def a(n)
   n == 'T' ? 'U' : n
 end
