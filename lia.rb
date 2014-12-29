@@ -7,6 +7,8 @@ input = "2 1" # here result should be 0.684
 k = input.chomp.split[0]
 n = input.chomp.split[1]
 
+# at least n = (0...n).map{|i| prob(i) }.reduce(&:+)
+
 # Return: The probability that at least N Aa Bb organisms will belong to the k-th generation of Tom's family tree (don't count the Aa Bb mates at each level).
 # Assume that Mendel's second law holds for the factors.
 
@@ -35,6 +37,10 @@ end
 
 # gen 1: AaBb x AaBb
 # p reproduce('AaBb', 'AaBb')
+#=> ["AABB", "AABb", "AABb", "AAbb", "AaBB", "AaBb", "AaBb", "Aabb", "AaBB", "AaBb", "AaBb", "Aabb", "aaBB", "aaBb", "aaBb", "aabb"]
+
+# gen2:
+p reproduce('AaBb', 'AaBb').map{|gen1| [gen1, reproduce(gen1, 'AaBb')] }
 #=> ["AABB", "AABb", "AABb", "AAbb", "AaBB", "AaBb", "AaBb", "Aabb", "AaBB", "AaBb", "AaBb", "Aabb", "aaBB", "aaBb", "aaBb", "aabb"]
 
 # just reproduce k-th generation
