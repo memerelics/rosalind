@@ -17,13 +17,6 @@ AAATCCC
 GGGTGGG
 EOF
 
-# def cut(str, n)
-#   (0..(str.length - n)).map do |i|
-#     str[i, n]
-#   end
-# end
-# # p cut("ABCDE", 3) #=> ["ABC", "BCD", "CDE"]
-
 # records = Fasta.load(input)
 records = Fasta.load(data)
 
