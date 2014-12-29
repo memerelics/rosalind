@@ -37,27 +37,36 @@ end
 # p reproduce('AaBb', 'AaBb')
 #=> ["AABB", "AABb", "AABb", "AAbb", "AaBB", "AaBb", "AaBb", "Aabb", "AaBB", "AaBb", "AaBb", "Aabb", "aaBB", "aaBb", "aaBb", "aabb"]
 
-def offsprings(generation, accum)
-  return accum if generation.zero?
+# just reproduce k-th generation
+def offsprings(k, accum)
+  return accum if k.zero?
   # Each organism always mates with an organism having genotype Aa Bb.
-  # offsprings(generation - 1, accum.reduce(Array.new) {|res, c|
-  #   res += reproduce(c, 'AaBb')
-  # })
+  offsprings(k - 1, accum.reduce(Array.new) {|res, c|
+    res += reproduce(c, 'AaBb')
+  })
+end
 
+# p offsprings(1, ['AaBb']).group_by{|x| x }.map{|k, v| [k, v.count] }.to_h
+#=> {"AABB"=>1, "AABb"=>2, "AAbb"=>1, "AaBB"=>2, "AaBb"=>4, "Aabb"=>2, "aaBB"=>1, "aaBb"=>2, "aabb"=>1}
+
+# sumup probability
+def offsprings_with_probs(k, accum)
+  return accum if k.zero?
   accum = accum.reduce({}) do |h, (org, prob)|
     children = reproduce(org, 'AaBb')
-    org_counts = children.group_by{|x| x }.map{|k, v| [k, v.count] }.to_h
-    org_counts.each do |k, count|
-      if accum[k]
-        h[k] = prob * (count / children.count.to_f)
+    org_counts = children.group_by{|x| x }.map{|key, v| [key, v.count] }.to_h
+    org_counts.each do |key, count|
+      if accum[key]
+        h[key] = prob * (count / children.count.to_f)
       else
-        h[k] = (count / children.count.to_f)
+        h[key] = (count / children.count.to_f)
       end
     end
     h
   end
-  offsprings(generation - 1, accum)
+  offsprings(k - 1, accum)
 end
+
 
 def init_keys
   {
@@ -69,14 +78,6 @@ def init_keys
   }
 end
 
-p offsprings(2, {'AaBb' => 1.0}).reduce(0){|sum, (k,v)|
-  k != 'AaBb' ? sum = sum + v : sum
-} # => 0.125 違う...
-
-
-# keys = init_keys
-# offsprings(2, ['AaBb']).each do |off|
-#   keys[off] = keys[off] + 1
-# end
-#
-# p keys
+# p offsprings(2, {'AaBb' => 1.0}).reduce(0){|sum, (k,v)|
+#   k != 'AaBb' ? sum = sum + v : sum
+# } # => 0.125 違う...
