@@ -2,7 +2,7 @@ def data(dir='/Users/hash/Downloads')
   base = File.basename(caller.first.split(':').first, '.rb')
   datafile = "#{dir}/rosalind_#{base}.txt"
   return nil unless File.exist?(datafile)
-  open(datafile).read
+  open(datafile).read.chomp
 end
 
 
@@ -28,7 +28,8 @@ if $0 == __FILE__
   require 'minitest/spec'
   require 'minitest/autorun'
 
-  data = <<-EOF
+  describe 'Fasta' do
+    data = <<-EOF
 >Rosalind_6404
 CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCC
 TCCCACTAATAATTCTGAGG
@@ -38,15 +39,16 @@ ATATCCATTTGTCAGCAGACACGC
 >Rosalind_0808
 CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGAC
 TGGGAACCTGCGGGCAGTAGGTGGAAT
-EOF
+    EOF
 
-  describe '.load' do
-    let(:res) { Fasta.load(data) }
-    it 'separate' do
-      res.count.must_equal 3
-    end
-    it 'join' do
-      res.last.string.length.must_equal 87
+    describe '.load' do
+      let(:res) { Fasta.load(data) }
+      it 'separate' do
+        res.count.must_equal 3
+      end
+      it 'join' do
+        res.last.string.length.must_equal 87
+      end
     end
   end
 end
