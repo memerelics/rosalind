@@ -45,11 +45,16 @@ end
 
 module Fasta
 
-  def self.load(data)
+  def self.load(data, label_expander=nil)
     records = []
     data.lines.each do |line|
       if line =~ /^>/
-        records << Record.new(line.chomp.gsub('>', ''), '')
+        label = if label_expander
+                  label_expander.call(line.chomp.gsub('>', ''))
+                else
+                  line.chomp.gsub('>', '')
+                end
+        records << Record.new(label, '')
       else
         records.last.string += line.chomp
       end
