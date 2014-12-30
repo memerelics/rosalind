@@ -1,0 +1,77 @@
+require './rosalind'
+require 'open-uri'
+
+# Finding a Protein Motif
+# http://www.uniprot.org/uniprot/B5ZC00
+
+
+# the N-glycosylation motif: N{P}[ST]{P}
+# -> regular expression form
+MOTIF = /N[^P][ST][^P]/
+
+
+# alm $ curl -L http://www.uniprot.org/uniprot/B5ZC00.fasta
+input = <<-EOF
+>sp|B5ZC00|SYG_UREU1 Glycine--tRNA ligase OS=Ureaplasma urealyticum serovar 10 (strain ATCC 33699 / Western) GN=glyQS PE=3 SV=1
+MKNKFKTQEELVNHLKTVGFVFANSEIYNGLANAWDYGPLGVLLKNNLKNLWWKEFVTKQ
+KDVVGLDSAIILNPLVWKASGHLDNFSDPLIDCKNCKARYRADKLIESFDENIHIAENSS
+NEEFAKVLNDYEISCPTCKQFNWTEIRHFNLMFKTYQGVIEDAKNVVYLRPETAQGIFVN
+FKNVQRSMRLHLPFGIAQIGKSFRNEITPGNFIFRTREFEQMEIEFFLKEESAYDIFDKY
+LNQIENWLVSACGLSLNNLRKHEHPKEELSHYSKKTIDFEYNFLHGFSELYGIAYRTNYD
+LSVHMNLSKKDLTYFDEQTKEKYVPHVIEPSVGVERLLYAILTEATFIEKLENDDERILM
+DLKYDLAPYKIAVMPLVNKLKDKAEEIYGKILDLNISATFDNSGSIGKRYRRQDAIGTIY
+CLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK
+EOF
+
+# NNTSY の部分が二重にモチーフ該当. 考慮漏れてた.
+input2 = <<-EOF
+>sp|P07204|TRBM_HUMAN Thrombomodulin OS=Homo sapiens GN=THBD PE=1 SV=2
+MLGVLVLGALALAGLGFPAPAEPQPGGSQCVEHDCFALYPGPATFLNASQICDGLRGHLM
+TVRSSVAADVISLLLNGDGGVGRRRLWIGLQLPPGCGDPKRLGPLRGFQWVTGDNNTSYS
+RWARLDLNGAPLCGPLCVAVSAAEATVPSEPIWEEQQCEVKADGFLCEFHFPATCRPLAV
+EPGAAAAAVSITYGTPFAARGADFQALPVGSSAAVAPLGLQLMCTAPPGAVQGHWAREAP
+GAWDCSVENGGCEHACNAIPGAPRCQCPAGAALQADGRSCTASATQSCNDLCEHFCVPNP
+DQPGSYSCMCETGYRLAADQHRCEDVDDCILEPSPCPQRCVNTQGGFECHCYPNYDLVDG
+ECVEPVDPCFRANCEYQCQPLNQTSYLCVCAEGFAPIPHEPHRCQMFCNQTACPADCDPN
+TQASCECPEGYILDDGFICTDIDECENGGFCSGVCHNLPGTFECICGPDSALARHIGTDC
+DSGKVDGGDSGSGEPPPSPTPGSTLTPPAVGLVHSGLLIGISIASLCLVVALLALLCHLR
+KKQGAARAKMEYKCAAPSKEVVLQHVRTERTPQRL
+EOF
+
+# records = Fasta.load(input2) # input
+# records = Fasta.load(open('http://www.uniprot.org/uniprot/B5ZC00.fasta').read)
+
+# sample dataset
+list = <<-EOF
+A2Z669
+B5ZC00
+P07204_TRBM_HUMAN
+P20840_SAG1_YEAST
+EOF
+
+# uniprot_ids = list.lines.map(&:chomp)
+uniprot_ids = data.lines.map(&:chomp)
+
+uniprot_data = ''
+uniprot_ids.each do |uniprot_id|
+  uniprot_data << open("http://www.uniprot.org/uniprot/#{uniprot_id}.fasta").read
+end
+
+records = Fasta.load(uniprot_data)
+# ugly, should be replaced
+records.each.with_index {|r, i| r.label = uniprot_ids[i] }
+
+def motif_indexes(motif, string, offset=0)
+  if ix = string.index(motif, offset)
+    [ix + 1] + motif_indexes(motif, string, ix + 1)
+  else
+    []
+  end
+end
+
+records.each do |record|
+  indexes = motif_indexes(MOTIF, record.string)
+  next if indexes.length.zero?
+  puts record.label
+  puts indexes.join(' ')
+end
