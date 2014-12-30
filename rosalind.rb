@@ -26,6 +26,23 @@ module RNA
   }
 end
 
+module DNA
+  TABLE = RNA::TABLE.map{|k,v| [k.to_s.gsub('U', 'T').to_sym, v] }.to_h
+
+  def self.complement(strand)
+    strand.chars.map{|c| pair(c) }.join
+  end
+
+  def self.pair(c)
+    case c
+    when 'A' then 'T'
+    when 'T' then 'A'
+    when 'C' then 'G'
+    when 'G' then 'C'
+    end
+  end
+end
+
 module Fasta
 
   def self.load(data)
@@ -48,7 +65,14 @@ if $0 == __FILE__
   require 'minitest/spec'
   require 'minitest/autorun'
 
-  describe 'Fasta' do
+  describe :DNA do
+    let(:strand) { 'AGCCATG' }
+    it '.complement' do
+      DNA.complement(strand).must_equal 'TCGGTAC'
+    end
+  end
+
+  describe :Fasta do
     data = <<-EOF
 >Rosalind_6404
 CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCC
