@@ -5,6 +5,18 @@ def data(dir='/Users/hash/Downloads')
   open(datafile).read.chomp
 end
 
+# k_mer(dna, 4).count
+# => 415(dna.length) - 4(k) + 1 = 412 k-mers.
+def k_mer(str, k)
+  res = []
+  (0..(str.length - 1)).each do |i|
+    rest = str.chars.drop(i)
+    break if rest.length < k
+    res << rest[0..(k - 1)].join
+  end
+  res
+end
+
 module RNA
   TABLE = {
     UUU: :F,    CUU: :L, AUU: :I, GUU: :V,
