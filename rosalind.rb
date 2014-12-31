@@ -27,6 +27,11 @@ def overlap(from: from, to: to, minimum: 1)
   nil
 end
 
+def fact(n)
+  return 1 if n <= 1
+  n * fact(n - 1)
+end
+
 module RNA
   TABLE = {
     UUU: :F,    CUU: :L, AUU: :I, GUU: :V,
