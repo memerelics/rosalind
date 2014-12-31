@@ -17,6 +17,16 @@ def k_mer(str, k)
   res
 end
 
+# overlap(from: 'ATTAGACCTG', to: 'CCTGCCGGAA') #=> 'CCTG'
+def overlap(from: from, to: to, minimum: 1)
+  ([from.length, to.length].min).downto(minimum) do |size|
+    if from[(-size)..-1] == to[0..(size-1)]
+      return from[(-size)..-1]
+    end
+  end
+  nil
+end
+
 module RNA
   TABLE = {
     UUU: :F,    CUU: :L, AUU: :I, GUU: :V,
@@ -81,6 +91,13 @@ end
 if $0 == __FILE__
   require 'minitest/spec'
   require 'minitest/autorun'
+
+  describe '#overlap' do
+    it { overlap(from: 'ATTAGACCTG', to: 'CCTGCCGGAA').must_equal 'CCTG' }
+    it { overlap(from: 'ACCTG', to: 'CCTGCCGGAA').must_equal 'CCTG' }
+    it { overlap(from: 'CC', to: 'CCTGCCGGAA').must_equal 'CC' }
+    it { overlap(from: '', to: 'CCTGCCGGAA').must_equal nil }
+  end
 
   describe :DNA do
     let(:strand) { 'AGCCATG' }
