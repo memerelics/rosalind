@@ -1,7 +1,7 @@
 def data(dir='/Users/hash/Downloads')
   base = File.basename(caller.first.split(':').first, '.rb')
   datafile = "#{dir}/rosalind_#{base}.txt"
-  return nil unless File.exist?(datafile)
+  raise "No datafile: #{datafile}" unless File.exist?(datafile)
   open(datafile).read.chomp
 end
 
