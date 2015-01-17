@@ -12,21 +12,21 @@ input = <<-EOF
 5 1 4 2 3
 EOF
 
-N = input.lines[0].chomp.to_i
-X = input.lines[1].chomp.split.map(&:to_i)
-P = Array.new(N)
-M = Array.new(N + 1)
+n = input.lines[0].chomp.to_i
+x = input.lines[1].chomp.split.map(&:to_i)
+p = Array.new(n)
+m = Array.new(n + 1)
 
-L = 0
-0.upto(N-1) do |i|
+l = 0
+0.upto(n-1) do |i|
   lo = 1
-  hi = L
+  hi = l
   # 最初はlo=1, hi=0なのでwhileに入らない
   # Binary search for the largest positive j ≤ L
   # such that X[M[j]] < X[i]
   while lo <= hi
     mid = ((lo + hi) / 2.0).ceil
-    if X[M[mid]] && X[M[mid]] < X[i]
+    if x[m[mid]] && x[m[mid]] < x[i]
       lo = mid + 1
     else
       hi = mid - 1
@@ -39,17 +39,17 @@ L = 0
 
   # The predecessor of X[i] is the last index of
   # the subsequence of length newL-1
-  P[i] = M[newL-1]
-  M[newL] = i
+  p[i] = m[newL-1]
+  m[newL] = i
 
-  L = newL if newL > L
+  l = newL if newL > l
 end
 
-S = Array.new(L)
-k = M[L]
-(L-1).downto(0) do |i|
-  S[i] = X[k]
-  k = P[k]
+s = Array.new(l)
+k = m[l]
+(l-1).downto(0) do |i|
+  s[i] = x[k]
+  k = p[k]
 end
 
-puts S.join(' ')
+puts s.join(' ')
