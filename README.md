@@ -7,6 +7,8 @@ Rosalindを解いていきます.
 
 [ROSALIND | Problems | Locations](http://rosalind.info/problems/locations/)
 
+![](https://github.com/memerelics/rosalind/blob/master/img/rosalind.jpg)
+
 ![](https://github.com/memerelics/rosalind/blob/master/img/top.png)
 
 
