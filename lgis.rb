@@ -19,12 +19,14 @@ EOF
 # 5 1 4 2 3
 # EOF
 
-@debug = true
+# @debug = true
+
+input = data
 
 n = input.lines[0].chomp.to_i
 x = input.lines[1].chomp.split.map(&:to_i)
 
-def lis(n, x)
+def longest_substring(func, n, x)
   p = Array.new(n)
   m = Array.new(n + 1)
 
@@ -51,7 +53,7 @@ def lis(n, x)
       pu "m[mid]: #{m[mid]}"
       pu "x[m[mid]]: #{x[m[mid]]}"
       pu "x[i]: #{x[i]}"
-      if x[m[mid]] < x[i]
+      if func.call(x[m[mid]], x[i])
         # pu "lo = mid(= #{mid}) + 1"
         lo = mid + 1
       else
@@ -90,49 +92,5 @@ def lis(n, x)
   return s.join(' ')
 end
 
-puts lis(n, x)
-
-
-def lds(n, x)
-  p = Array.new(n)
-  m = Array.new(n + 1)
-
-  longest = 0
-  0.upto(n-1) do |i|
-    lo = 1
-    hi = longest
-
-    # Binary search for the largest positive j ≤ L
-    # such that X[M[j]] < X[i]
-    while lo <= hi
-      mid = ((lo + hi) / 2.0).ceil
-      if x[m[mid]] > x[i]
-        lo = mid + 1
-      else
-        hi = mid - 1
-      end
-    end
-
-    # After searching, lo is 1 greater than the
-    # length of the longest prefix of X[i]
-    newL = lo
-
-    # The predecessor of X[i] is the last index of
-    # the subsequence of length newL-1
-    p[i] = m[newL-1] # mにはindexが入ってる.
-    m[newL] = i # mは二つの情報を保持する. いまチェックしたindex(i)が入る
-
-    longest = newL if newL > longest
-  end
-
-  s = Array.new(longest)
-  k = m[longest] # kの最初だけmから取る. あとの確定版indexはpに移ってるのでloop中で更新していく
-  (longest - 1).downto(0) do |i|
-    s[i] = x[k]
-    k = p[k]
-  end
-
-  return s.join(' ')
-end
-
-puts lds(n, x)
+puts longest_substring(-> (a, b) { a < b }, n, x)
+puts longest_substring(-> (a, b) { a > b }, n, x)
