@@ -32,6 +32,11 @@ def fact(n)
   n * fact(n - 1)
 end
 
+def pu(str)
+  return unless @debug
+  puts(str)
+end
+
 module RNA
   TABLE = {
     UUU: :F,    CUU: :L, AUU: :I, GUU: :V,
